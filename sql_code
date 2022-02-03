@@ -1,0 +1,119 @@
+set echo on;
+
+/*
+--------------------------------------------------------------------------------
+  Name: Ashley Joyner
+  Date: Oct 19, 2015
+--------------------------------------------------------------------------------
+  Purpose-
+    creates a database with three tables: department, student, and major
+--------------------------------------------------------------------------------
+*/
+
+--creates a table named department
+CREATE TABLE department(
+  dept_id               NUMBER(4,0),            --integer holding the department ID
+  dept_name             VARCHAR2(20)  NOT NULL, --string holding the department name
+  dept_address          VARCHAR2(20),           --string holding the department address
+  dept_phone            NUMBER(11,0),           --integer holding the department phone number
+  CONSTRAINT pk_dept_id PRIMARY KEY(dept_id)    --identifying the primary key
+);
+
+--creates a table named major
+CREATE TABLE major(
+  major_id              NUMBER(4,0),            --integer holding the major ID
+  major_name            VARCHAR2(20)  NOT NULL, --string holding the major name
+  major_dept            NUMBER(4,0),            --integer holding the department number of the major
+  CONSTRAINT pk_major_id PRIMARY KEY(major_id), --identifying the primary key
+  CONSTRAINT fk_major_dept FOREIGN KEY(major_dept) REFERENCES department(dept_id) --identifying the foreign key
+);
+
+--creates a table named student
+CREATE TABLE student(
+  student_id            NUMBER(8,0),            --integer holding the student ID
+  student_first_name    VARCHAR2(20)  NOT NULL, --string holding the student's first name
+  student_last_name     VARCHAR2(25)  NOT NULL, --string holding the student's last name
+  student_email         VARCHAR2(25)  NOT NULL  UNIQUE, --string holding the student's email
+  student_phone_number  NUMBER(11,0),           --integer holding the student's phone number
+  student_major         NUMBER(4,0),            --integer holding the ID of the student's major 
+  CONSTRAINT pk_student_id PRIMARY KEY(student_id),     --identifying the primary key
+  CONSTRAINT fk_student_major FOREIGN KEY(student_major) REFERENCES major(major_id) --identifying the foreign key
+);
+
+--assigns values to the table department
+INSERT INTO department
+  VALUES(1222, 'Computing', 'Nicks Hall', 1234567899);
+
+--assigns values to the table department
+INSERT INTO department
+  VALUES(1100, 'Acounting', 'Sam Wilson', 4567890567);
+
+--assigns values to the table major
+INSERT INTO major
+  VALUES(1205, 'Computing', 1222);
+
+--assigns values to the table major
+INSERT INTO major
+  VALUES(2222, 'Accounting', 1100);
+
+--assigns values to the table student
+INSERT INTO student
+  VALUES(0055778844, 'Ashley', 'Joyner', 'joynera@etsu.edu', 4234564567, 1205);
+
+--assigns values to the table student
+INSERT INTO student
+  VALUES(1122334455, 'Anna', 'McLeod', 'mcleoda@etsu.edu', 876543212, 2222);
+
+--creates an index for student_major
+CREATE INDEX idx_student_fk ON student(student_major);
+
+--creates an index for major_dept
+CREATE INDEX idx_major_fk ON major(major_dept);
+
+--changes the possible length of the student's last name to 20
+ALTER TABLE student
+  MODIFY student_last_name VARCHAR2(20);
+
+--adds a new column to the table student for the student's middle initial
+ALTER TABLE student
+  ADD student_mi CHAR(1);
+
+--inserts a value into the new column in the table student
+UPDATE student
+  SET student_mi='E'
+  WHERE student_id=0055778844;
+
+--drops a column from the table department
+ALTER TABLE department
+  DROP COLUMN dept_id;
+
+--drops the constraint on a foreign key
+ALTER TABLE major
+  DROP CONSTRAINT fk_major_dept;
+
+--drops the constraint on a foreign key
+ALTER TABLE student
+  DROP CONSTRAINT fk_student_major;
+
+--changes the constraint on a foreign key
+ALTER TABLE major
+  ADD CONSTRAINT fk_major_dept FOREIGN KEY(major_dept) REFERENCES department(dept_id)
+  ON DELETE CASCADE;
+
+--changes the constraint on a foreign key
+ALTER TABLE student
+  ADD CONSTRAINT fk_student_major FOREIGN KEY(student_major) REFERENCES major(major_id)
+  ON DELETE CASCADE;
+
+--drops a column from the table department
+ALTER TABLE department
+  DROP COLUMN dept_id;
+
+--drops the table student
+DROP TABLE student;
+
+--drops the table major
+DROP TABLE major;
+
+--drops the table department
+DROP TABLE department;
