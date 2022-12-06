@@ -62,7 +62,7 @@ INSERT INTO student
 
 --assigns values to the table student
 INSERT INTO student
-  VALUES(1122334455, 'Anna', 'McLeod', 'mcleoda@etsu.edu', 876543212, 2222);
+  VALUES(1122334455, 'Mary', 'Smith', 'smithm@etsu.edu', 876543212, 2222);
 
 --creates an index for student_major
 CREATE INDEX idx_student_fk ON student(student_major);
